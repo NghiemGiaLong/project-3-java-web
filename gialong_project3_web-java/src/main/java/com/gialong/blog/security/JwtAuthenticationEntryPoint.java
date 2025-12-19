@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-/**
- * Lớp này xử lý việc trả về lỗi 401 Unauthorized khi người dùng cố gắng
- * truy cập tài nguyên bảo mật mà không có thông tin xác thực (token) hợp lệ.
- */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

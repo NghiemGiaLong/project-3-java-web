@@ -18,7 +18,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // SỬA LỖI: Dùng getRoleName() vì bên Role.java biến tên là roleName
+
         return Collections.singleton(new SimpleGrantedAuthority(user.getRole().getRoleName()));
     }
 

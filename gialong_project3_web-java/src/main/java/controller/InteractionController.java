@@ -23,7 +23,6 @@ public class InteractionController {
         // 1. Tạo đối tượng DTO để chuyển dữ liệu
         CommentDto commentDto = new CommentDto();
 
-        // Bây giờ lệnh này sẽ chạy OK vì bên Request đã đổi thành getBody()
         commentDto.setBody(request.getBody());
 
         // 2. Lấy ID bài viết
@@ -33,7 +32,7 @@ public class InteractionController {
         // Vì Service yêu cầu userId, ta tạm thời để cứng là 1L để test
         Long userId = 1L;
 
-        // 4. SỬA QUAN TRỌNG: Gọi hàm với ĐỦ 3 THAM SỐ (postId, dto, userId)
+
         CommentDto createdComment = commentService.createComment(postId, commentDto, userId);
 
         return new ResponseEntity<>(createdComment, HttpStatus.CREATED);

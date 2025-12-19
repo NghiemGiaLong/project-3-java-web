@@ -32,10 +32,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto createPost(PostDto postDto, Long userId) {
-        // --- SỬA ĐỔI QUAN TRỌNG ĐỂ FIX LỖI 401/NULL ---
 
-        // 1. Thay vì lấy từ SecurityContext (bị lỗi khi chưa login), ta lấy User ID 1 mặc định
-        // Đảm bảo trong Database bảng 'users' đã có user mang id = 1
+
+
         User user = userRepository.findById(1L)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", 1L));
 

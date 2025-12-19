@@ -7,7 +7,7 @@ public class JwtAuthResponse {
 
     private String accessToken;
     private String tokenType = "Bearer";
-    private String role; // <--- Thêm trường này
+    private String role;
 
     // Cập nhật Constructor để nhận thêm role
     public JwtAuthResponse(String accessToken, String role) {

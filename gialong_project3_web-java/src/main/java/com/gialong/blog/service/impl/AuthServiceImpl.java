@@ -40,16 +40,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String login(LoginDto loginDto) {
-        // 1. Xác thực người dùng
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getUsernameOrEmail(),
                         loginDto.getPassword()));
 
-        // 2. Thiết lập đối tượng xác thực vào SecurityContext
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 3. Tạo JWT Token và trả về
+
         return jwtTokenProvider.generateToken(authentication);
     }
 

@@ -89,8 +89,6 @@ public class AdminController {
     @PutMapping("/users/{userId}/toggle-lock")
     public ResponseEntity<String> toggleUserLock(@PathVariable Long userId) {
 
-        // SỬA QUAN TRỌNG: Gọi hàm toggleUserStatus thay vì deactivateUser
-        // Hàm này sẽ tự động kiểm tra: Nếu đang mở -> khóa, nếu đang khóa -> mở
         userService.toggleUserStatus(userId);
 
         return ResponseEntity.ok("Cập nhật trạng thái tài khoản thành công!");

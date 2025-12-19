@@ -15,6 +15,5 @@ public interface UserService {
 
     UserDto updateUserRole(Long userId, String newRoleName);
 
-    // SỬA: Đổi tên hàm để khớp với Implementation
     void toggleUserStatus(Long userId);
 }

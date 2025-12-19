@@ -49,8 +49,7 @@ public class InteractionService {
         comment.setPost(post);
         comment.setUser(user);
 
-        // --- SỬA QUAN TRỌNG TẠI ĐÂY ---
-        // Entity dùng 'content', Request dùng 'body' -> Phải mapping thủ công
+
         comment.setContent(request.getBody()); // Sửa .setBody() -> .setContent()
 
         comment.setCreatedAt(LocalDateTime.now());
@@ -62,9 +61,8 @@ public class InteractionService {
         CommentDto dto = new CommentDto();
         dto.setId(savedComment.getId());
 
-        // --- SỬA QUAN TRỌNG TẠI ĐÂY ---
-        // Lấy 'content' từ Entity gán vào 'body' của DTO
-        dto.setBody(savedComment.getContent()); // Sửa .getBody() -> .getContent()
+
+        dto.setBody(savedComment.getContent());
 
         dto.setPostId(post.getId());
         dto.setUserId(user.getId());
@@ -74,5 +72,5 @@ public class InteractionService {
         return dto;
     }
 
-    // Bạn có thể thêm method xử lý Reaction ở đây...
+
 }

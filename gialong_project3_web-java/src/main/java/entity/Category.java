@@ -20,8 +20,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // SỬA: Đổi tên biến thành 'categoryName' để Lombok sinh ra getCategoryName()
-    // Khớp với Service đang gọi và khớp với cột 'category_name' trong SQL
+
     @Column(name = "category_name", nullable = false)
     private String categoryName;
 

@@ -36,8 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = getTokenFromRequest(request);
 
             if (token == null) {
-                // Nếu không có token thì thôi, để các filter sau xử lý (hoặc chặn ở SecurityConfig)
-                // System.out.println("DEBUG: Không tìm thấy Token trong Header");
+
             } else {
                 System.out.println("DEBUG: Tìm thấy Token: " + token.substring(0, 10) + "...");
 

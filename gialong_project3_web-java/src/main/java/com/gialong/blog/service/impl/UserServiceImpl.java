@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
             user.setActive(true);
             user.setLockTime(null); // Xóa giờ khóa
 
-            // Reset bộ đếm lỗi để user không bị khóa lại ngay lập tức
+
             if (user.getFailedAttempt() > 0) {
                 user.setFailedAttempt(0);
             }

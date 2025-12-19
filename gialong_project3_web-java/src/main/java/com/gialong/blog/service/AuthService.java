@@ -3,7 +3,7 @@ package com.gialong.blog.service;
 import com.gialong.blog.payload.LoginDto;    // <--- ĐÃ SỬA: LoginRequest -> LoginDto
 import com.gialong.blog.payload.RegisterDto; // <--- ĐÃ SỬA: RegisterRequest -> RegisterDto
 
-// Đây là một Interface, không phải là một lớp (class)
+
 public interface AuthService {
 
     // Đăng ký tài khoản mới. Trả về thông báo thành công.

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-@Data // Tự động tạo Getters, Setters, toString, v.v. (Nếu dùng Lombok)
+@Data
 public class RegisterDto {
 
     @NotEmpty(message = "Username không được để trống")

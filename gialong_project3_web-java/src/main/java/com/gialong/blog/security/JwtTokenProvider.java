@@ -13,21 +13,20 @@ import java.util.Base64;
 @Component
 public class JwtTokenProvider {
 
-    // 1. SỬA: Cố định Secret Key (Không dùng @Value nữa)
-    // Chuỗi này tôi viết sẵn, đủ dài và an toàn
+
     private final String jwtSecret = "DayLaChuoiBiMatCucKyQuanTrongDeMaHoaTokenKhongDuocDeLoRaNgoai123456789";
 
-    // 2. SỬA: Cố định thời gian hết hạn (7 ngày)
+
     private final long jwtExpirationDate = 604800000;
 
-    // 3. SỬA: Logic tạo Key an toàn hơn
+
     private SecretKey key() {
-        // Mã hóa chuỗi bí mật sang Base64 rồi mới Decode để đảm bảo chuẩn thuật toán
+
         String secretBase64 = Base64.getEncoder().encodeToString(jwtSecret.getBytes());
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretBase64));
     }
 
-    // Tạo JWT Token (Giữ nguyên cú pháp của bạn)
+
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
         Date currentDate = new Date();
@@ -41,7 +40,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // Lấy username từ JWT Token (Giữ nguyên cú pháp của bạn)
+
     public String getUsername(String token) {
         return Jwts.parser()
                 .verifyWith(key())
@@ -51,7 +50,6 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    // Validate Token (Sửa nhẹ để bắt lỗi chính xác hơn)
     public boolean validateToken(String token) {
         try {
             Jwts.parser()

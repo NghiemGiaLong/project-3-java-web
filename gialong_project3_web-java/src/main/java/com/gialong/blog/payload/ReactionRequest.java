@@ -1,4 +1,4 @@
-// SỬA DÒNG NÀY: Dùng package payload thay vì dto
+
 package com.gialong.blog.payload;
 
 public class ReactionRequest {

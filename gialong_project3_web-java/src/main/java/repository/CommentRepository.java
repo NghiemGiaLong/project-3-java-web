@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-// SỬA QUAN TRỌNG: Đổi <Comment, Integer> thành <Comment, Long>
+
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     /**

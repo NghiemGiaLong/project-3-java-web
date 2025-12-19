@@ -3,7 +3,7 @@ package com.gialong.blog.controller;
 import com.gialong.blog.payload.PostDto;
 import com.gialong.blog.payload.PostResponse;
 import com.gialong.blog.service.PostService;
-import com.gialong.blog.utils.AppConstants; // Đảm bảo bạn có class này, nếu không hãy thay bằng chuỗi cứng
+
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +24,7 @@ public class PostController {
     // 1. TẠO BÀI VIẾT (QUAN TRỌNG: ĐÃ SỬA ĐỂ FIX LỖI 401)
     // ========================================================================
 
-    // Lưu ý: Tôi đã comment dòng PreAuthorize lại.
-    // Điều này cho phép SecurityConfig (.permitAll) hoạt động thực sự.
-    // @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+
     @PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto) {
         // Truyền 1L (ID của Admin) vào đây để khớp với logic trong Service
@@ -34,9 +32,7 @@ public class PostController {
         return new ResponseEntity<>(postService.createPost(postDto, 1L), HttpStatus.CREATED);
     }
 
-    // ========================================================================
-    // 2. CÁC API KHÁC (GIỮ NGUYÊN)
-    // ========================================================================
+
 
     // Lấy tất cả bài viết (Phân trang & Sắp xếp)
     @GetMapping

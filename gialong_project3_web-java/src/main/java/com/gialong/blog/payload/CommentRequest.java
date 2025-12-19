@@ -2,7 +2,7 @@ package com.gialong.blog.payload;
 
 public class CommentRequest {
     private Long postId;
-    // SỬA: Đổi 'content' thành 'body' để khớp với Controller và DTO
+
     private String body;
 
     public CommentRequest() {
@@ -21,12 +21,12 @@ public class CommentRequest {
         this.postId = postId;
     }
 
-    // SỬA: Getter đổi thành getBody
+
     public String getBody() {
         return body;
     }
 
-    // SỬA: Setter đổi thành setBody
+
     public void setBody(String body) {
         this.body = body;
     }

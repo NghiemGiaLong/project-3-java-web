@@ -42,8 +42,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto addCategory(CategoryDto categoryDto) {
-        // (Tuỳ chọn) Bạn có thể thêm kiểm tra trùng tên tại đây bằng hàm findByCategoryName
-        // if(categoryRepository.findByCategoryName(categoryDto.getName()).isPresent()) { ... }
 
         Category category = mapToEntity(categoryDto);
         Category savedCategory = categoryRepository.save(category);
