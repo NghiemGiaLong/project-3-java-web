@@ -7,21 +7,22 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "comments") // Khớp với tên bảng trong SQL
+// UniqueConstraint: Báo cho JPA biết 1 user chỉ được có 1 reaction cho 1 bài post
+@Table(name = "reactions", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "post_id"})
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment {
+public class Reaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "content", nullable = false, length = 500)
-    private String content;
-
-    @Column(name = "is_approved")
-    private Boolean isApproved = false;
+    @Enumerated(EnumType.STRING) // Lưu chữ "LIKE" hoặc "DISLIKE" vào database
+    @Column(name = "type", nullable = false)
+    private ReactionType type;
 
     // Quan hệ N-1 với Post
     @ManyToOne(fetch = FetchType.LAZY)

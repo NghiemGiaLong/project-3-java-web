@@ -1,0 +1,13 @@
+### Request 1: Đăng nhập và lưu Token vào biến
+# SỬ DỤNG: POST {{host}}/api/auth/login
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+    "usernameOrEmail": "tester_new",
+    "password": "matkhau"
+}
+
+// Đây là dòng quan trọng: Lưu giá trị 'accessToken' vào biến môi trường 'jwt_token'
+> {% client.global.set("jwt_token", response.body.accessToken); %}

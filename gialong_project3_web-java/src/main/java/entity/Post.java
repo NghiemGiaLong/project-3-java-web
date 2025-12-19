@@ -1,62 +1,51 @@
 package com.gialong.blog.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
-import java.util.Set; // Dùng cho quan hệ 1-Nhiều (Comment)
 
-@Entity
-@Table(name = "Posts")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "posts")
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "title", nullable = false, length = 255)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    // Sử dụng @Lob cho trường NTEXT/LOB
-    @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "thumbnail_url", length = 255)
-    private String thumbnailURL;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Column(name = "is_published")
-    private Boolean isPublished = false;
+    private boolean isPublished = true;
 
-    // Quan hệ N-1: Nhiều Post thuộc về 1 User (Author)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User author;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-    // Quan hệ N-1: Nhiều Post thuộc về 1 Category
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    // Quan hệ với Category
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    // Quan hệ 1-N: Một Post có nhiều Comment
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments; // Cần tạo Entity Comment trước
-
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    // --- CẬP NHẬT: Thêm quan hệ với User ---
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false) // Bắt buộc phải có user_id
+    private User user;
 }

@@ -1,0 +1,121 @@
+<div class="container">
+    <h2><i class="fas fa-users-cog"></i> Quản lý người dùng</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Thông tin</th>
+            <th>Trạng thái</th> <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody id="userTableBody">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Lưu ý: URL này phải khớp với Controller của bạn
+    // Vì AdminController có @RequestMapping("/api/admin"), nên URL phải là:
+    const API_URL = 'http://localhost:8080/api/admin/users';
+
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+        window.location.href = '/login.html';
+    }
+
+    // Load danh sách User
+    async function loadUsers() {
+        try {
+            const res = await fetch(API_URL, {
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (res.ok) {
+                const users = await res.json();
+                renderTable(users);
+            } else {
+                alert("Không thể tải danh sách (Quyền Admin?)");
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function renderTable(users) {
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = '';
+
+        users.forEach(user => {
+            // Logic hiển thị trạng thái
+            // accountNonLocked = true (Mở) -> Hiển thị Badge Xanh, Nút Khóa (Đỏ)
+            // accountNonLocked = false (Khóa) -> Hiển thị Badge Đỏ, Nút Mở (Xanh)
+
+            const isActive = user.accountNonLocked;
+
+            const statusBadge = isActive
+                ? `<span style="color:#00c853; font-weight:bold;">Đang hoạt động</span>`
+                : `<span style="color:#ff5252; font-weight:bold;">Đã bị khóa</span>`;
+
+            const actionButton = isActive
+                ? `<button class="btn-action btn-lock" onclick="toggleLock(${user.id}, 'LOCK')">
+                     <i class="fas fa-lock"></i> Khóa
+                   </button>`
+                : `<button class="btn-action btn-unlock" onclick="toggleLock(${user.id}, 'UNLOCK')">
+                     <i class="fas fa-unlock"></i> Mở khóa
+                   </button>`;
+
+            tbody.innerHTML += `
+                <tr>
+                    <td>#${user.id}</td>
+                    <td>
+                        <div><strong>${user.username}</strong></div>
+                        <div style="font-size:0.85rem; color:#888;">${user.email}</div>
+                    </td>
+                    <td>${statusBadge}</td>
+                    <td>${actionButton}</td>
+                </tr>
+            `;
+        });
+    }
+
+    // Hàm xử lý Khóa / Mở khóa
+    async function toggleLock(id, type) {
+        const msg = type === 'LOCK'
+            ? "Bạn muốn KHÓA tài khoản này?"
+            : "Bạn muốn MỞ KHÓA tài khoản này?";
+
+        if (!confirm(msg)) return;
+
+        try {
+            // Gọi API toggle-lock
+            const res = await fetch(`${API_URL}/${id}/toggle-lock`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (res.ok) {
+                alert("Cập nhật thành công!");
+                loadUsers(); // Tải lại bảng để cập nhật giao diện
+            } else {
+                alert("Lỗi khi cập nhật trạng thái.");
+            }
+        } catch (err) {
+            alert("Lỗi kết nối Server!");
+        }
+    }
+
+    // CSS bổ sung cho nút bấm (thêm vào phần <style> trên head)
+    /* .btn-action { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; color: white; }
+    .btn-lock { background: #ff5252; }
+    .btn-lock:hover { background: #d32f2f; }
+    .btn-unlock { background: #00c853; }
+    .btn-unlock:hover { background: #009624; }
+    */
+
+    loadUsers();
+</script>

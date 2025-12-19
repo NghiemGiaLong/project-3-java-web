@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Về chúng tôi - VLP Blog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-sub: #b3b3b3;
+            --accent-color: #00c853;
+        }
+
+        body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-main); }
+        a { text-decoration: none; color: inherit; }
+
+        /* HEADER (Giữ nguyên) */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem; background-color: #000; border-bottom: 1px solid #333; }
+        .logo { font-size: 1.8rem; font-weight: bold; color: var(--accent-color); letter-spacing: 2px; }
+        nav ul { list-style: none; display: flex; padding: 0; margin: 0; }
+        nav li { margin-left: 2rem; }
+        nav a:hover { color: var(--accent-color); }
+
+        /* ABOUT CONTENT */
+        .container {
+            max-width: 800px; /* Thu hẹp chiều rộng để dễ đọc */
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--accent-color);
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 200, 83, 0.2);
+        }
+
+        .about-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .about-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .content-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .highlight {
+            color: white;
+            font-weight: bold;
+        }
+
+        /* SOCIAL MEDIA SECTION */
+        .social-section {
+            margin-top: 60px;
+            text-align: center;
+            border-top: 1px solid #333;
+            padding-top: 40px;
+        }
+
+        .social-title {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            color: var(--text-main);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            background-color: var(--card-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+            color: var(--text-sub);
+            border: 1px solid #333;
+        }
+
+        /* Màu sắc riêng cho từng mạng xã hội khi hover */
+        .social-btn:hover { transform: translateY(-5px); color: white; }
+        .fb:hover { background-color: #1877F2; border-color: #1877F2; }
+        .yt:hover { background-color: #FF0000; border-color: #FF0000; }
+        .tt:hover { background-color: #000000; border-color: #ffffff; text-shadow: 2px 2px 0px #ff0050; } /* Tiktok Style */
+        .gh:hover { background-color: #333; border-color: white; }
+        .em:hover { background-color: var(--accent-color); border-color: var(--accent-color); }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">VLP BLOG</div>
+    <nav>
+        <ul>
+            <li><a href="/index.html">Trang chủ</a></li>
+            <li><a href="/posts.html">Bài viết</a></li>
+            <li><a href="/categories.html">Danh mục</a></li>
+            <li><a href="/about.html" style="color: var(--accent-color);">About Us</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="profile-section">
+
+        <h1 class="about-title">vlp blog</h1>
+        <div class="about-subtitle">TEST</div>
+    </div>
+
+    <div class="content-text">
+        <p>
+            Welcome to <span class="highlight">VLP Blog</span>! Learning happens when we allow ourselves to be puzzled by things around us.
+        </p>
+        <p>
+            We believe somebody’s odd can be someone else’s  <span class="highlight">normal</span>.
+        </p>
+        <p>
+            thus our goal with this show is to introduce you to the people and ideas that will help you open up your range of normals and odds
+        </p>
+    </div>
+
+    <div class="social-section">
+        <h3 class="social-title">Kết nối với mình qua</h3>
+        <div class="social-icons">
+            <a href="#" class="social-btn fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+
+            <a href="#" class="social-btn yt" title="YouTube"><i class="fab fa-youtube"></i></a>
+
+            <a href="#" class="social-btn tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
+
+            <a href="https://github.com/your-github" class="social-btn gh" title="GitHub"><i class="fab fa-github"></i></a>
+
+            <a href="mailto:contact@gialong.com" class="social-btn em" title="Email"><i class="fas fa-envelope"></i></a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết bài viết - VLP Blog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- COPY VARIABLES TỪ INDEX ĐỂ ĐỒNG BỘ MÀU --- */
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-sub: #b3b3b3;
+            --accent-color: #00c853;
+            --border-color: #333;
+            --input-bg: #2d2d2d;
+        }
+
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        a:hover { color: var(--accent-color); }
+
+        /* HEADER (Giống Index) */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem; background-color: #000; border-bottom: 1px solid var(--border-color); }
+        .logo { font-size: 1.8rem; font-weight: bold; color: var(--accent-color); letter-spacing: 2px; cursor: pointer; }
+        nav ul { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
+        nav li { margin-left: 2rem; }
+
+        .btn-login { padding: 0.6rem 1.2rem; background-color: var(--accent-color); color: #000; border-radius: 5px; font-weight: bold; }
+        .btn-login:hover { background-color: #00a844; }
+        .admin-link { color: #ffd700 !important; font-weight: bold; border: 1px solid #ffd700; padding: 5px 10px; border-radius: 4px; }
+        .hidden { display: none !important; }
+
+        /* LAYOUT CHÍNH */
+        .main-container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
+        /* Nút quay lại */
+        .btn-back { display: inline-flex; align-items: center; color: var(--text-sub); margin-bottom: 20px; font-weight: 500; }
+        .btn-back:hover { color: var(--accent-color); transform: translateX(-5px); }
+
+        /* KHUNG BÀI VIẾT (CARD STYLE) */
+        .post-card { background-color: var(--card-bg); padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+
+        /* Header bài viết */
+        .post-header { margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .category-badge { background: var(--accent-color); color: #000; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; display: inline-block; margin-bottom: 15px; }
+
+        /* SỬA LỖI TRÀN CHỮ Ở TIÊU ĐỀ */
+        h1 {
+            margin: 10px 0; font-size: 2.2rem; color: #fff; line-height: 1.3;
+            overflow-wrap: break-word; /* Tự xuống dòng nếu chữ quá dài */
+            word-wrap: break-word;
+        }
+
+        .meta-info { color: var(--text-sub); font-size: 0.95rem; margin-top: 15px; display: flex; align-items: center; gap: 20px; }
+        .meta-info i { color: var(--accent-color); margin-right: 5px; }
+
+        /* Nội dung bài viết */
+        .post-image-cover { width: 100%; max-height: 500px; object-fit: cover; border-radius: 8px; margin-bottom: 30px; border: 1px solid #333; }
+
+        /* --- QUAN TRỌNG: SỬA LỖI TRÀN CHỮ NỘI DUNG TẠI ĐÂY --- */
+        .post-content {
+            font-size: 1.15rem;
+            color: #dcdcdc;
+            line-height: 1.9;
+
+            /* Các thuộc tính chống tràn chữ */
+            overflow-wrap: break-word;  /* Chuẩn mới */
+            word-wrap: break-word;      /* Hỗ trợ trình duyệt cũ */
+            word-break: break-word;     /* Ngắt từ dài xuống dòng */
+            white-space: pre-wrap;      /* Giữ nguyên xuống dòng của người viết */
+        }
+
+        .post-content p { margin-bottom: 20px; }
+        .post-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0; }
+        .post-content blockquote { border-left: 4px solid var(--accent-color); padding-left: 20px; margin: 20px 0; color: #fff; font-style: italic; background: #252525; padding: 15px 20px; border-radius: 0 8px 8px 0; }
+
+        /* THANH TƯƠNG TÁC (LIKE/DISLIKE) */
+        .interaction-bar { display: flex; gap: 15px; margin: 40px 0; padding: 25px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+
+        .btn-reaction {
+            padding: 10px 25px; border: 1px solid #444; background: var(--input-bg); border-radius: 30px;
+            cursor: pointer; transition: all 0.2s; font-weight: 600; color: var(--text-sub); display: flex; align-items: center; gap: 8px; font-size: 1rem;
+        }
+        .btn-reaction:hover { background: #383838; border-color: #666; color: #fff; }
+
+        /* Trạng thái Active */
+        .btn-reaction.active-like { background-color: rgba(0, 200, 83, 0.15); color: var(--accent-color); border-color: var(--accent-color); }
+        .btn-reaction.active-dislike { background-color: rgba(229, 57, 53, 0.15); color: #e53935; border-color: #e53935; }
+
+        /* PHẦN BÌNH LUẬN */
+        .comment-section { margin-top: 40px; }
+        .section-title { font-size: 1.5rem; margin-bottom: 20px; color: #fff; border-left: 4px solid var(--accent-color); padding-left: 15px; }
+
+        .comment-input-wrapper { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; background: #252525; padding: 20px; border-radius: 8px; }
+
+        textarea {
+            width: 100%; padding: 15px; background-color: #121212; border: 1px solid #444; border-radius: 6px;
+            resize: vertical; min-height: 80px; font-family: inherit; color: #fff; outline: none; transition: 0.3s;
+            box-sizing: border-box; /* Đảm bảo padding không làm vỡ layout */
+        }
+        textarea:focus { border-color: var(--accent-color); }
+
+        .btn-submit { align-self: flex-end; background: var(--accent-color); color: #000; border: none; padding: 10px 30px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem;}
+        .btn-submit:hover { background: #00e676; box-shadow: 0 0 10px rgba(0, 200, 83, 0.4); }
+
+        /* Danh sách comment */
+        .comment-item { display: flex; gap: 15px; margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #333; }
+        .avatar { width: 50px; height: 50px; background: #333; color: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; border: 2px solid #444; flex-shrink: 0; }
+
+        .comment-body { overflow: hidden; } /* Ngăn tràn chữ trong comment */
+        .comment-body h4 { margin: 0 0 5px 0; font-size: 1rem; color: #fff; }
+        .comment-body p { margin: 0; color: #ccc; line-height: 1.5; font-size: 0.95rem; overflow-wrap: break-word; }
+        .comment-time { font-size: 0.8rem; color: #666; margin-top: 8px; display: block; }
+
+        #loadingText { text-align: center; font-style: italic; color: #666; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo" onclick="window.location.href='index.html'">VLP BLOG</div>
+    <nav>
+        <ul>
+            <li><a href="index.html">Trang chủ</a></li>
+            <li><a href="posts.html">Bài viết</a></li>
+            <li><a href="categories.html">Danh mục</a></li>
+
+            <li id="adminNav" class="hidden">
+                <a href="admin.html" class="admin-link">QUẢN TRỊ</a>
+            </li>
+            <li id="authBtnLi"><a href="login.html" class="btn-login">Đăng nhập</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="main-container">
+    <a href="posts.html" class="btn-back"><i class="fas fa-arrow-left"></i>&nbsp; Quay lại danh sách</a>
+
+    <div id="loadingText"><i class="fas fa-spinner fa-spin"></i> Đang tải bài viết...</div>
+
+    <div id="postContent" style="display:none;">
+        <div class="post-card">
+            <div class="post-header">
+                <span class="category-badge" id="categoryName">General</span>
+                <h1 id="postTitle">Tiêu đề bài viết</h1>
+                <div class="meta-info">
+                    <span><i class="fas fa-user-astronaut"></i> <span id="authorName">Admin</span></span>
+                    <span><i class="far fa-clock"></i> <span id="postDate">...</span></span>
+                </div>
+            </div>
+
+            <img id="postImage" src="" class="post-image-cover" style="display:none;">
+
+            <div class="post-content" id="postBody">
+            </div>
+
+            <div class="interaction-bar">
+                <button class="btn-reaction" id="btnLike" onclick="handleReaction('LIKE')">
+                    <i class="fas fa-thumbs-up"></i> &nbsp;<span id="likeCount">0</span> Thích
+                </button>
+                <button class="btn-reaction" id="btnDislike" onclick="handleReaction('DISLIKE')">
+                    <i class="fas fa-thumbs-down"></i> &nbsp;<span id="dislikeCount">0</span> Không thích
+                </button>
+            </div>
+
+            <div class="comment-section">
+                <h3 class="section-title">Bình luận (<span id="commentCount">0</span>)</h3>
+
+                <div class="comment-input-wrapper">
+                    <textarea id="commentInput" placeholder="Chia sẻ suy nghĩ của bạn về bài viết này..."></textarea>
+                    <button class="btn-submit" onclick="submitComment()">Gửi bình luận <i class="fas fa-paper-plane"></i></button>
+                </div>
+
+                <div id="commentList">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- CẤU HÌNH ---
+    const API_URL = 'http://localhost:8080/api';
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
+
+    // --- KHỞI TẠO ---
+    document.addEventListener("DOMContentLoaded", () => {
+        checkLoginState(); // Đồng bộ header login
+
+        if(!postId) {
+            alert("Không tìm thấy ID bài viết");
+            window.location.href = 'index.html';
+            return;
+        }
+        loadPostDetail();
+        loadComments();
+    });
+
+    // --- LOGIC HEADER (Giống Index) ---
+    function checkLoginState() {
+        const token = localStorage.getItem('blog_token');
+        const role = localStorage.getItem('user_role');
+
+        if(token) {
+            document.getElementById('authBtnLi').innerHTML = `
+                <a href="#" class="btn-login" style="background:#333; color:white; border:1px solid #555;" onclick="logout()">
+                    Đăng xuất
+                </a>`;
+            if (role === 'ROLE_ADMIN' || role === 'ADMIN') {
+                document.getElementById('adminNav').classList.remove('hidden');
+            }
+        }
+    }
+
+    function logout() {
+        if(confirm("Bạn có chắc muốn đăng xuất?")) {
+            localStorage.removeItem('blog_token');
+            localStorage.removeItem('user_role');
+            window.location.href = 'login.html';
+        }
+    }
+
+    // --- 1. LOAD CHI TIẾT BÀI VIẾT ---
+    async function loadPostDetail() {
+        try {
+            const res = await fetch(`${API_URL}/posts/${postId}`);
+            if(!res.ok) throw new Error("Lỗi tải bài viết");
+
+            const post = await res.json();
+
+            // Render dữ liệu
+            document.title = post.title + " - VLP Blog";
+            document.getElementById('postTitle').innerText = post.title;
+            document.getElementById('categoryName').innerText = post.categoryName || 'Mặc định';
+            document.getElementById('authorName').innerText = post.authorName || 'Admin';
+            document.getElementById('postDate').innerText = new Date(post.createdAt).toLocaleDateString('vi-VN');
+            document.getElementById('postBody').innerHTML = post.content;
+
+            // Hình ảnh
+            if(post.imageUrl) {
+                const img = document.getElementById('postImage');
+                img.src = post.imageUrl;
+                img.style.display = 'block';
+            }
+
+            // Số liệu
+            document.getElementById('likeCount').innerText = post.likeCount || 0;
+            document.getElementById('dislikeCount').innerText = post.dislikeCount || 0;
+            document.getElementById('commentCount').innerText = post.commentCount || 0;
+
+            // Hiển thị UI
+            document.getElementById('loadingText').style.display = 'none';
+            document.getElementById('postContent').style.display = 'block';
+
+        } catch (e) {
+            document.getElementById('loadingText').innerHTML = `<p style="color:#e53935">Lỗi: Không thể tải bài viết.</p>`;
+            console.error(e);
+        }
+    }
+
+    // --- 2. LOAD COMMENT ---
+    async function loadComments() {
+        try {
+            const res = await fetch(`${API_URL}/comments/post/${postId}`);
+            if(res.ok) {
+                const comments = await res.json();
+                renderComments(comments);
+                document.getElementById('commentCount').innerText = comments.length;
+            }
+        } catch (e) { console.error("Lỗi tải comment", e); }
+    }
+
+    function renderComments(comments) {
+        const list = document.getElementById('commentList');
+        list.innerHTML = '';
+
+        if(comments.length === 0) {
+            list.innerHTML = '<p style="color:#777; font-style:italic; text-align:center;">Chưa có bình luận nào. Hãy là người đầu tiên!</p>';
+            return;
+        }
+
+        comments.forEach(c => {
+            const username = c.username || 'Người dùng';
+            const initial = username.charAt(0).toUpperCase();
+            const date = new Date(c.createdAt).toLocaleString('vi-VN');
+
+            list.innerHTML += `
+                <div class="comment-item">
+                    <div class="avatar">${initial}</div>
+                    <div class="comment-body">
+                        <h4>${username}</h4>
+                        <p>${c.body}</p>
+                        <span class="comment-time">${date}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // --- 3. GỬI COMMENT ---
+    async function submitComment() {
+        const token = localStorage.getItem('blog_token');
+        if(!token) {
+            alert("Bạn cần đăng nhập để bình luận!");
+            window.location.href = 'login.html';
+            return;
+        }
+
+        const input = document.getElementById('commentInput');
+        const content = input.value.trim();
+
+        if(!content) return alert("Vui lòng nhập nội dung!");
+
+        try {
+            const res = await fetch(`${API_URL}/interactions/comments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ postId: postId, body: content })
+            });
+
+            if(res.ok) {
+                input.value = '';
+                loadComments();
+            } else {
+                alert("Lỗi khi gửi bình luận (Token có thể hết hạn).");
+            }
+        } catch(e) { console.error(e); alert("Lỗi kết nối server"); }
+    }
+
+    // --- 4. LIKE / DISLIKE ---
+    async function handleReaction(type) {
+        const token = localStorage.getItem('blog_token');
+        if(!token) {
+            alert("Bạn cần đăng nhập để tương tác!");
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_URL}/interactions/reactions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ postId: postId, type: type })
+            });
+
+            if(res.ok) {
+                // UI Feedback giả lập (để user thấy ngay)
+                const likeSpan = document.getElementById('likeCount');
+                const dislikeSpan = document.getElementById('dislikeCount');
+                const btnLike = document.getElementById('btnLike');
+                const btnDislike = document.getElementById('btnDislike');
+
+                // Reset
+                btnLike.classList.remove('active-like');
+                btnDislike.classList.remove('active-dislike');
+
+                if (type === 'LIKE') {
+                    likeSpan.innerText = parseInt(likeSpan.innerText) + 1;
+                    btnLike.classList.add('active-like');
+                } else {
+                    dislikeSpan.innerText = parseInt(dislikeSpan.innerText) + 1;
+                    btnDislike.classList.add('active-dislike');
+                }
+            } else {
+                alert("Lỗi tương tác (Server)");
+            }
+        } catch (e) { console.error(e); }
+    }
+</script>
+</body>
+</html>

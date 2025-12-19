@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh mục - VLP Blog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #00c853;
+        }
+        body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+
+        /* HEADER (Giữ nguyên) */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem; background-color: #000; border-bottom: 1px solid #333; }
+        .logo { font-size: 1.8rem; font-weight: bold; color: var(--accent-color); letter-spacing: 2px; }
+        nav ul { list-style: none; display: flex; padding: 0; margin: 0; }
+        nav li { margin-left: 2rem; }
+        nav a { text-decoration: none; color: white; transition: color 0.3s; }
+        nav a:hover { color: var(--accent-color); }
+
+        /* CATEGORY GRID */
+        .container { max-width: 1200px; margin: 3rem auto; padding: 0 20px; }
+        .page-title { text-align: center; margin-bottom: 3rem; font-size: 2rem; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 10px; position: relative; left: 50%; transform: translateX(-50%); }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .cat-card {
+            background-color: var(--card-bg);
+            padding: 40px 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s, background 0.3s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .cat-card:hover {
+            transform: translateY(-10px);
+            background-color: #252525;
+            border-color: var(--accent-color);
+        }
+
+        .cat-icon { font-size: 3rem; color: var(--accent-color); margin-bottom: 20px; }
+        .cat-name { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; }
+        .cat-desc { font-size: 0.9rem; color: #aaa; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">VLP BLOG</div>
+    <nav>
+        <ul>
+            <li><a href="/index.html">Trang chủ</a></li>
+            <li><a href="/posts.html">Bài viết</a></li>
+            <li><a href="/categories.html" style="color: var(--accent-color);">Danh mục</a></li>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/login.html">Đăng nhập</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <h2 class="page-title">Khám Phá Chủ Đề</h2>
+    <div class="category-grid" id="categoryGrid">
+        <p style="text-align:center; width:100%">Đang tải danh mục...</p>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080/api/categories';
+
+    document.addEventListener('DOMContentLoaded', loadCategories);
+
+    async function loadCategories() {
+        try {
+            const res = await fetch(API_URL);
+            if (!res.ok) throw new Error("Lỗi API");
+            const categories = await res.json();
+
+            const grid = document.getElementById('categoryGrid');
+            grid.innerHTML = '';
+
+            if(categories.length === 0) {
+                grid.innerHTML = '<p>Chưa có danh mục nào.</p>';
+                return;
+            }
+
+            categories.forEach(cat => {
+                // Khi click vào danh mục, chuyển sang trang posts.html kèm ID
+                grid.innerHTML += `
+                    <div class="cat-card" onclick="window.location.href='/posts.html?categoryId=${cat.id}'">
+                        <div class="cat-icon"><i class="fas fa-folder-open"></i></div>
+                        <div class="cat-name">${cat.name}</div>
+                        <div class="cat-desc">${cat.description || 'Chuyên mục hấp dẫn về ' + cat.name}</div>
+                    </div>
+                `;
+            });
+
+        } catch (err) {
+            // Dữ liệu giả để test giao diện
+            renderFakeCategories();
+        }
+    }
+
+    function renderFakeCategories() {
+        const grid = document.getElementById('categoryGrid');
+        grid.innerHTML = '';
+        const fakes = [
+            {id: 1, name: 'Công nghệ', desc: 'Review, tin tức công nghệ mới nhất'},
+            {id: 2, name: 'Đời sống', desc: 'Chia sẻ kinh nghiệm sống'},
+            {id: 3, name: 'Lập trình', desc: 'Java, Spring Boot, ReactJS...'},
+            {id: 4, name: 'Podcast', desc: 'Nghe và ngẫm'},
+        ];
+        fakes.forEach(cat => {
+            grid.innerHTML += `
+                <div class="cat-card" onclick="window.location.href='/posts.html?categoryId=${cat.id}'">
+                    <div class="cat-icon"><i class="fas fa-layer-group"></i></div>
+                    <div class="cat-name">${cat.name}</div>
+                    <div class="cat-desc">${cat.desc}</div>
+                </div>
+            `;
+        });
+    }
+</script>
+</body>
+</html>

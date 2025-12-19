@@ -1,55 +1,58 @@
 package com.gialong.blog.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "Users")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "username", nullable = false, length = 100, unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(name = "email", nullable = false, length = 150, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password_hash", nullable = false, length = 255)
-    private String passwordHash; // Lưu mật khẩu đã mã hóa
+    @Column(name = "password_hash", nullable = false)
+    private String password;
 
-    @Column(name = "full_name", length = 150)
+    @Column(name = "full_name")
     private String fullName;
 
     @Column(name = "is_active")
-    private Boolean isActive = true;
+    private boolean isActive = true;
 
-    // Mối quan hệ N-1: Nhiều User có 1 Role
-    @ManyToOne(fetch = FetchType.EAGER) // EAGER: Tải Role cùng lúc với User
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    // --- CÁC TRƯỜNG MỚI THÊM ĐỂ HỖ TRỢ KHÓA TÀI KHOẢN ---
+    @Column(name = "failed_attempt")
+    private int failedAttempt = 0; // Mặc định là 0
 
+    @Column(name = "lock_time")
+    private LocalDateTime lockTime; // Thời điểm bị khóa
+
+    // ----------------------------------------------------
+
+    @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Thiết lập giá trị mặc định (Thời gian tạo)
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
-    // Thiết lập giá trị (Thời gian cập nhật)
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 }

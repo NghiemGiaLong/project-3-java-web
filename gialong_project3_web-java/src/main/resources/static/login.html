@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - VLP Blog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #00c853; /* Xanh lá */
+            --input-bg: #2c2c2c;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--input-bg);
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: #00a844;
+        }
+
+        .switch-text {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .switch-text a {
+            color: var(--accent-color);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .switch-text a:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error-msg {
+            color: #ff4444;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="loginCard" class="card">
+        <h2>Đăng Nhập</h2>
+        <div id="loginError" class="error-msg">Sai tài khoản hoặc mật khẩu!</div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Username hoặc Email</label>
+                <input type="text" id="loginId" required placeholder="Nhập username/email...">
+            </div>
+            <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password" id="loginPass" required placeholder="Nhập mật khẩu...">
+            </div>
+            <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
+        </form>
+
+        <div class="switch-text">
+            Chưa có tài khoản? <a onclick="showRegister()">Đăng ký ngay</a>
+        </div>
+        <div class="switch-text" style="margin-top: 10px;">
+            <a href="/" style="color: #666; font-size: 0.8rem;">← Về trang chủ</a>
+        </div>
+    </div>
+
+    <div id="registerCard" class="card hidden">
+        <h2>Đăng Ký</h2>
+        <div id="regError" class="error-msg">Lỗi đăng ký!</div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Tên tài khoản (Username)</label>
+                <input type="text" id="regUsername" required placeholder="VD: gialong123">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="regEmail" required placeholder="VD: long@email.com">
+            </div>
+            <div class="form-group">
+                <label>Họ và tên</label>
+                <input type="text" id="regFullname" required placeholder="VD: Nguyễn Gia Long">
+            </div>
+            <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password" id="regPass" required placeholder="Nhập mật khẩu...">
+            </div>
+            <button type="submit" class="btn-submit">ĐĂNG KÝ</button>
+        </form>
+
+        <div class="switch-text">
+            Đã có tài khoản? <a onclick="showLogin()">Đăng nhập</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080/api/auth';
+
+    // --- CHUYỂN ĐỔI GIỮA LOGIN VÀ REGISTER ---
+    function showRegister() {
+        document.getElementById('loginCard').classList.add('hidden');
+        document.getElementById('registerCard').classList.remove('hidden');
+        clearErrors();
+    }
+
+    function showLogin() {
+        document.getElementById('registerCard').classList.add('hidden');
+        document.getElementById('loginCard').classList.remove('hidden');
+        clearErrors();
+    }
+
+    function clearErrors() {
+        document.getElementById('loginError').style.display = 'none';
+        document.getElementById('regError').style.display = 'none';
+    }
+
+    // --- XỬ LÝ ĐĂNG NHẬP ---
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            usernameOrEmail: document.getElementById('loginId').value,
+            password: document.getElementById('loginPass').value
+        };
+
+        try {
+            const res = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                const result = await res.json();
+
+                // 1. LƯU TOKEN
+                localStorage.setItem('blog_token', result.accessToken);
+
+                // 2. LƯU ROLE (Đây là phần quan trọng mới thêm vào)
+                if (result.role) {
+                    localStorage.setItem('user_role', result.role);
+                } else {
+                    // Nếu không có role trả về, xóa role cũ để tránh lỗi quyền hạn
+                    localStorage.removeItem('user_role');
+                }
+
+                alert("Đăng nhập thành công!");
+
+                // 3. Chuyển hướng về trang chủ
+                window.location.href = '/';
+
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Lỗi kết nối Server!");
+        }
+    });
+
+    // --- XỬ LÝ ĐĂNG KÝ ---
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            username: document.getElementById('regUsername').value,
+            email: document.getElementById('regEmail').value,
+            fullName: document.getElementById('regFullname').value,
+            password: document.getElementById('regPass').value
+        };
+
+        try {
+            const res = await fetch(`${API_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const text = await res.text();
+
+            if (res.ok) {
+                alert("Đăng ký thành công! Vui lòng đăng nhập.");
+                showLogin();
+                document.getElementById('loginId').value = data.username;
+            } else {
+                const errorMsg = document.getElementById('regError');
+                errorMsg.innerText = text || "Đăng ký thất bại (Trùng username/email?)";
+                errorMsg.style.display = 'block';
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Lỗi kết nối Server!");
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,32 +1,33 @@
 package com.gialong.blog.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
+import lombok.Setter;
 
-@Entity
-@Table(name = "Categories")
-@Data
+import java.util.List;
+
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "categories")
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "category_name", nullable = false, length = 150)
+    // SỬA: Đổi tên biến thành 'categoryName' để Lombok sinh ra getCategoryName()
+    // Khớp với Service đang gọi và khớp với cột 'category_name' trong SQL
+    @Column(name = "category_name", nullable = false)
     private String categoryName;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private String description;
 
-    // Mối quan hệ 1-Nhiều (một Category có nhiều Post)
-    // @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private Set<Post> posts;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    // Quan hệ với bài viết
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts;
 }

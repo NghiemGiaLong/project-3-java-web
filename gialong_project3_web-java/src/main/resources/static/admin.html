@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - VLP Blog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #e0e0e0;
+            --accent: #00c853;
+            --warning: #ffb300;
+            --info: #29b6f6; /* Màu cho nút xem website */
+            --border: #333;
+            --danger: #ff4444;
+        }
+
+        body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); color: var(--text-main); }
+
+        /* ADMIN NAVBAR */
+        .admin-nav {
+            background-color: #000;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); letter-spacing: 1px; cursor: pointer; }
+
+        .nav-links { display: flex; gap: 10px; }
+
+        .nav-btn {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        /* Nút xem website riêng biệt */
+        .btn-view-site { border-color: var(--info); color: var(--info); }
+        .btn-view-site:hover { background-color: var(--info); color: #000; }
+
+        /* DASHBOARD CONTENT */
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .page-header h2 { margin: 0; }
+
+        /* UI COMPONENTS */
+        .stats-card {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+
+        /* TABLE STYLES */
+        .stats-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .stats-table th, .stats-table td { text-align: left; padding: 15px; border-bottom: 1px solid var(--border); }
+        .stats-table th { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
+
+        .row-clickable { cursor: pointer; transition: background 0.2s; }
+        .row-clickable:hover { background-color: #2a2a2a; }
+
+        .count-badge { background-color: #333; padding: 5px 12px; border-radius: 20px; font-weight: bold; color: white; font-size: 0.85rem; }
+
+        /* BUTTONS */
+        .btn-action { padding: 8px 15px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+        .btn-create { background-color: var(--accent); color: #000; }
+        .btn-create:hover { background-color: #00a844; }
+
+        .btn-reset { background: transparent; border: 1px solid #666; color: #aaa; }
+        .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+
+        .btn-edit { background-color: transparent; border: 1px solid var(--warning); color: var(--warning); padding: 5px 10px; margin-right: 5px; cursor: pointer; }
+        .btn-edit:hover { background-color: var(--warning); color: black; }
+
+        .btn-delete { background-color: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; cursor: pointer;}
+        .btn-delete:hover { background-color: var(--danger); color: white; }
+
+        /* LOCK BUTTON */
+        .btn-lock { background-color: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; cursor: pointer; }
+        .btn-lock:hover { background-color: var(--danger); color: white; }
+        .btn-unlock { background-color: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 5px 10px; cursor: pointer; }
+        .btn-unlock:hover { background-color: var(--accent); color: black; }
+
+        /* MODAL STYLES */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-box {
+            background-color: var(--bg-card); width: 600px; padding: 30px;
+            border-radius: 10px; border: 1px solid var(--border);
+            box-shadow: 0 0 20px rgba(0, 200, 83, 0.2);
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--accent); font-weight: 500; }
+        .form-control {
+            width: 100%; padding: 12px; background-color: #2c2c2c;
+            border: 1px solid var(--border); color: white; border-radius: 5px; box-sizing: border-box;
+        }
+        .form-control:focus { outline: none; border-color: var(--accent); }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<nav class="admin-nav">
+    <div class="admin-logo" onclick="window.location.href='/'"><i class="fas fa-user-shield"></i> ADMIN PANEL</div>
+    <div class="nav-links">
+        <a href="/" target="_blank" class="nav-btn btn-view-site">
+            <i class="fas fa-globe"></i> Xem Website
+        </a>
+
+        <a onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-btn active"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a onclick="switchTab('posts')" id="tab-posts" class="nav-btn"><i class="fas fa-newspaper"></i> Bài Viết</a>
+        <a onclick="switchTab('categories')" id="tab-categories" class="nav-btn"><i class="fas fa-folder"></i> Danh Mục</a>
+
+        <a onclick="switchTab('users')" id="tab-users" class="nav-btn"><i class="fas fa-users"></i> Người Dùng</a>
+
+        <a onclick="logout()" class="nav-btn" style="border-color: var(--danger); color: var(--danger);"> <i class="fas fa-sign-out-alt"></i> Thoát</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div id="section-dashboard">
+        <div class="page-header">
+            <h2>Thống Kê Tổng Quan</h2>
+        </div>
+        <div class="stats-card">
+            <h3 style="margin-top:0"><i class="fas fa-table"></i> Thống kê bài viết</h3>
+            <table class="stats-table">
+                <thead>
+                <tr>
+                    <th width="15%">Category ID</th>
+                    <th width="55%">Tên Danh Mục</th>
+                    <th width="30%">Số Lượng Bài Viết</th>
+                </tr>
+                </thead>
+                <tbody id="statsBody">
+                <tr><td colspan="3" align="center">Đang tính toán dữ liệu...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="section-posts" class="hidden">
+        <div class="page-header">
+            <h2 id="postsPageTitle">Quản Lý Bài Viết</h2>
+            <div style="display: flex; gap: 10px;">
+                <button id="btnShowAll" class="btn-action btn-reset hidden" onclick="resetPostFilter()">
+                    <i class="fas fa-undo"></i> Xem tất cả
+                </button>
+                <button class="btn-action btn-create" onclick="openPostModal('create')">
+                    <i class="fas fa-plus"></i> Viết Bài Mới
+                </button>
+            </div>
+        </div>
+        <div class="stats-card">
+            <table class="stats-table">
+                <thead>
+                <tr>
+                    <th width="5%">ID</th>
+                    <th width="35%">Tiêu đề</th>
+                    <th width="25%">Mô tả</th>
+                    <th width="15%">Danh mục</th>
+                    <th width="20%">Hành động</th>
+                </tr>
+                </thead>
+                <tbody id="postsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="section-categories" class="hidden">
+        <div class="page-header">
+            <h2>Quản Lý Danh Mục</h2>
+            <button class="btn-action btn-create" onclick="openCategoryModal('create')">
+                <i class="fas fa-folder-plus"></i> Thêm Danh Mục
+            </button>
+        </div>
+        <div class="stats-card">
+            <table class="stats-table">
+                <thead>
+                <tr>
+                    <th width="10%">ID</th>
+                    <th width="30%">Tên Danh Mục</th>
+                    <th width="40%">Mô Tả</th>
+                    <th width="20%">Hành động</th>
+                </tr>
+                </thead>
+                <tbody id="categoriesBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="section-users" class="hidden">
+        <div class="page-header">
+            <h2>Quản Lý Người Dùng</h2>
+        </div>
+        <div class="stats-card">
+            <table class="stats-table">
+                <thead>
+                <tr>
+                    <th width="10%">ID</th>
+                    <th width="30%">Thông tin User</th>
+                    <th width="20%">Quyền (Role)</th>
+                    <th width="20%">Trạng thái</th>
+                    <th width="20%">Hành động</th>
+                </tr>
+                </thead>
+                <tbody id="usersBody">
+                <tr><td colspan="5">Đang tải...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div id="postModal" class="modal-overlay">
+    <div class="modal-box">
+        <h2 id="postModalTitle" style="color: var(--accent); margin-top: 0;">Thêm Bài Viết Mới</h2>
+        <form id="postForm">
+            <input type="hidden" id="postId">
+            <div class="form-group">
+                <label>Tiêu đề</label>
+                <input type="text" id="postTitle" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Mô tả ngắn</label>
+                <input type="text" id="postDesc" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Nội dung</label>
+                <textarea id="postContent" class="form-control" rows="5" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Chọn Danh mục</label>
+                <select id="postCategoryId" class="form-control"></select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action" style="background: #444; color: white;" onclick="closeModal('postModal')">Hủy</button>
+                <button type="submit" class="btn-action btn-create">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="categoryModal" class="modal-overlay">
+    <div class="modal-box">
+        <h2 id="catModalTitle" style="color: var(--accent); margin-top: 0;">Thêm Danh Mục</h2>
+        <form id="categoryForm">
+            <input type="hidden" id="catId">
+            <div class="form-group">
+                <label>Tên Danh mục</label>
+                <input type="text" id="catName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Mô tả</label>
+                <input type="text" id="catDesc" class="form-control" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action" style="background: #444; color: white;" onclick="closeModal('categoryModal')">Hủy</button>
+                <button type="submit" class="btn-action btn-create">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080/api';
+
+    // AUTH CHECK
+    const token = localStorage.getItem('blog_token'); // Sửa thành key bạn đang dùng (accessToken hoặc blog_token)
+    // Lưu ý: Đảm bảo khi login bạn lưu token với key 'blog_token'
+
+    // Nếu chưa đăng nhập -> văng ra login
+    if (!token) {
+        window.location.href = '/login.html';
+    }
+
+    let globalPosts = [];
+    let globalCategories = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadAllData();
+        renderStats();
+    });
+
+    async function loadAllData() {
+        await Promise.all([loadCategories(), loadPosts()]);
+        // Load users nếu đang ở tab users (để tiết kiệm)
+        if(document.getElementById('section-users').classList.contains('active')) {
+            loadUsers();
+        }
+    }
+
+    // --- SWITCH TAB ---
+    function switchTab(tabName) {
+        ['dashboard', 'posts', 'categories', 'users'].forEach(t => {
+            const section = document.getElementById(`section-${t}`);
+            const tab = document.getElementById(`tab-${t}`);
+            if(section) section.classList.add('hidden');
+            if(tab) tab.classList.remove('active');
+        });
+        document.getElementById(`section-${tabName}`).classList.remove('hidden');
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+
+        // Lazy load User khi click vào tab
+        if(tabName === 'users') {
+            loadUsers();
+        }
+    }
+
+    // --- POSTS & CATEGORIES (Giữ nguyên logic cũ) ---
+    async function loadPosts() {
+        try {
+            const res = await fetch(`${API_URL}/posts?pageNo=0&pageSize=100&sortBy=id&sortDir=desc`);
+            const data = await res.json();
+            globalPosts = data.content || data;
+            renderPostsTable(globalPosts);
+        } catch (err) { console.error("Err Posts", err); }
+    }
+
+    async function loadCategories() {
+        try {
+            const res = await fetch(`${API_URL}/categories`);
+            globalCategories = await res.json();
+            renderCategoriesTable(globalCategories);
+            renderCategorySelectOptions();
+        } catch (err) { console.error("Err Cats", err); }
+    }
+
+    function renderStats() {
+        const tbody = document.getElementById('statsBody');
+        tbody.innerHTML = '';
+        if (globalCategories.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3">Chưa có dữ liệu.</td></tr>';
+            return;
+        }
+        globalCategories.forEach(cat => {
+            const count = globalPosts.filter(p => p.categoryId === cat.id).length;
+            tbody.innerHTML += `
+                <tr class="row-clickable" onclick="filterPostsByCat(${cat.id}, '${cat.name}')">
+                    <td>#${cat.id}</td>
+                    <td style="font-weight:500; color:white;">${cat.name}</td>
+                    <td><span class="count-badge">${count} bài</span></td>
+                </tr>
+            `;
+        });
+    }
+
+    function filterPostsByCat(catId, catName) {
+        switchTab('posts');
+        document.getElementById('postsPageTitle').innerHTML = `Danh mục: <span style="color:var(--accent)">${catName}</span>`;
+        document.getElementById('btnShowAll').classList.remove('hidden');
+        const filtered = globalPosts.filter(p => p.categoryId === catId);
+        renderPostsTable(filtered);
+    }
+
+    function resetPostFilter() {
+        document.getElementById('postsPageTitle').innerText = "Quản Lý Bài Viết";
+        document.getElementById('btnShowAll').classList.add('hidden');
+        renderPostsTable(globalPosts);
+    }
+
+    function renderPostsTable(posts) {
+        const tbody = document.getElementById('postsBody');
+        tbody.innerHTML = '';
+        posts.forEach(p => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>#${p.id}</td>
+                    <td style="font-weight:500; color:white;">${p.title}</td>
+                    <td style="color:#aaa;">${p.description ? p.description.substring(0,30)+'...' : ''}</td>
+                    <td><span class="count-badge">${p.categoryName || 'Unknown'}</span></td>
+                    <td>
+                        <button class="btn-edit" onclick="openPostModal('edit', ${p.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="deletePost(${p.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    function renderCategoriesTable(cats) {
+        const tbody = document.getElementById('categoriesBody');
+        tbody.innerHTML = '';
+        cats.forEach(c => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>#${c.id}</td>
+                    <td style="font-weight:bold; color:var(--accent);">${c.name}</td>
+                    <td style="color:#aaa;">${c.description}</td>
+                    <td>
+                        <button class="btn-edit" onclick="openCategoryModal('edit', ${c.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="deleteCategory(${c.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    // --- 4. USER MANAGEMENT LOGIC (Mới thêm) ---
+    async function loadUsers() {
+        try {
+            // Gọi API AdminController chúng ta vừa viết
+            const res = await fetch(`${API_URL}/admin/users`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if(res.ok) {
+                const users = await res.json();
+                renderUsersTable(users);
+            } else {
+                console.error("Failed to load users");
+            }
+        } catch(err) { console.error(err); }
+    }
+
+    function renderUsersTable(users) {
+        const tbody = document.getElementById('usersBody');
+        tbody.innerHTML = '';
+        users.forEach(u => {
+            // Kiểm tra trạng thái khóa
+            // Lưu ý: UserDto trả về isActive (true = mở, false = khóa)
+            const isLocked = !u.active; // Nếu active = false thì là bị khóa
+
+            const statusHtml = isLocked
+                ? `<span style="color:var(--danger); font-weight:bold;"><i class="fas fa-lock"></i> Đã khóa</span>`
+                : `<span style="color:var(--accent); font-weight:bold;"><i class="fas fa-check-circle"></i> Hoạt động</span>`;
+
+            const actionBtn = isLocked
+                ? `<button class="btn-unlock" onclick="toggleLock(${u.id})"><i class="fas fa-unlock"></i> Mở khóa</button>`
+                : `<button class="btn-lock" onclick="toggleLock(${u.id})"><i class="fas fa-lock"></i> Khóa TK</button>`;
+
+            // Xác định Role (Giả sử trả về String "ROLE_ADMIN" hoặc object)
+            let roleDisplay = u.role || 'USER';
+
+            tbody.innerHTML += `
+                <tr>
+                    <td>#${u.id}</td>
+                    <td>
+                        <div style="font-weight:bold; color:white;">${u.username}</div>
+                        <div style="font-size:0.8rem; color:#888;">${u.email}</div>
+                    </td>
+                    <td><span class="count-badge">${roleDisplay}</span></td>
+                    <td>${statusHtml}</td>
+                    <td>${actionBtn}</td>
+                </tr>
+            `;
+        });
+    }
+
+    async function toggleLock(userId) {
+        if(!confirm("Bạn có chắc muốn thay đổi trạng thái khóa của User này?")) return;
+        try {
+            const res = await fetch(`${API_URL}/admin/users/${userId}/toggle-lock`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if(res.ok) {
+                alert("Thành công!");
+                loadUsers(); // Reload bảng
+            } else {
+                alert("Lỗi server!");
+            }
+        } catch(err) { alert("Lỗi kết nối"); }
+    }
+
+    // --- FORM SUBMIT HANDLERS (Giữ nguyên) ---
+    document.getElementById('postForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('postId').value;
+        const payload = {
+            title: document.getElementById('postTitle').value,
+            description: document.getElementById('postDesc').value,
+            content: document.getElementById('postContent').value,
+            categoryId: document.getElementById('postCategoryId').value
+        };
+        const url = id ? `${API_URL}/posts/${id}` : `${API_URL}/posts`;
+        const method = id ? 'PUT' : 'POST';
+
+        await fetch(url, { method, headers: {'Content-Type':'application/json', 'Authorization':`Bearer ${token}`}, body: JSON.stringify(payload) });
+        closeModal('postModal'); loadAllData(); renderStats();
+    });
+
+    document.getElementById('categoryForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('catId').value;
+        const payload = { name: document.getElementById('catName').value, description: document.getElementById('catDesc').value };
+        const url = id ? `${API_URL}/categories/${id}` : `${API_URL}/categories`;
+        const method = id ? 'PUT' : 'POST';
+
+        await fetch(url, { method, headers: {'Content-Type':'application/json', 'Authorization':`Bearer ${token}`}, body: JSON.stringify(payload) });
+        closeModal('categoryModal'); loadAllData(); renderStats();
+    });
+
+    // --- UTILS ---
+    function renderCategorySelectOptions() {
+        const select = document.getElementById('postCategoryId');
+        select.innerHTML = '';
+        globalCategories.forEach(c => select.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+    }
+
+    // DELETE Functions (Rút gọn)
+    async function deletePost(id) { if(confirm("Xóa bài?")) await fetch(`${API_URL}/posts/${id}`, {method:'DELETE', headers:{'Authorization':`Bearer ${token}`}}); loadAllData(); renderStats(); }
+    async function deleteCategory(id) { if(confirm("Xóa danh mục?")) await fetch(`${API_URL}/categories/${id}`, {method:'DELETE', headers:{'Authorization':`Bearer ${token}`}}); loadAllData(); renderStats(); }
+
+    function openPostModal(mode, id=null) {
+        document.getElementById('postModal').style.display = 'flex';
+        if(mode==='create') { document.getElementById('postForm').reset(); document.getElementById('postId').value=''; }
+        else {
+            const p = globalPosts.find(x=>x.id===id);
+            document.getElementById('postId').value=id; document.getElementById('postTitle').value=p.title;
+            document.getElementById('postDesc').value=p.description; document.getElementById('postContent').value=p.content;
+            document.getElementById('postCategoryId').value=p.categoryId;
+        }
+    }
+    function openCategoryModal(mode, id=null) {
+        document.getElementById('categoryModal').style.display = 'flex';
+        if(mode==='create') { document.getElementById('categoryForm').reset(); document.getElementById('catId').value=''; }
+        else {
+            const c = globalCategories.find(x=>x.id===id);
+            document.getElementById('catId').value=id; document.getElementById('catName').value=c.name; document.getElementById('catDesc').value=c.description;
+        }
+    }
+    function closeModal(id) { document.getElementById(id).style.display='none'; }
+    window.onclick = function(e) { if(e.target.classList.contains('modal-overlay')) e.target.style.display='none'; }
+    function logout() { localStorage.removeItem('blog_token'); window.location.href = '/login.html'; } // Sửa key cho khớp logic Auth
+</script>
+
+</body>
+</html>

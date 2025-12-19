@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLP BLOG - Trang chủ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #00c853;
+            --hover-color: #333;
+        }
+
+        body { font-family: 'Roboto', sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-color); }
+
+        /* Header */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem; background-color: var(--bg-color); border-bottom: 1px solid #333; }
+        .logo { font-size: 1.8rem; font-weight: bold; color: var(--accent-color); letter-spacing: 2px; cursor: pointer; }
+        nav ul { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
+        nav li { margin-left: 2.5rem; }
+        nav a { text-decoration: none; color: var(--text-color); font-weight: 500; transition: color 0.3s; cursor: pointer; }
+        nav a:hover { color: var(--accent-color); }
+        .btn-login { padding: 0.6rem 1.2rem; background-color: var(--accent-color); color: #000; border-radius: 5px; font-weight: bold; }
+        .btn-login:hover { background-color: #00a844; color: #000; }
+
+        /* Nút Admin nổi bật */
+        .admin-link { color: #ffd700 !important; font-weight: bold; border: 1px solid #ffd700; padding: 5px 10px; border-radius: 4px; }
+        .admin-link:hover { background-color: #ffd700; color: #000 !important; }
+
+        /* Main Content */
+        main { padding: 3rem; min-height: 80vh; }
+
+        /* Hero Section */
+        .hero-section { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 3rem; }
+        .hero-large-card { background-color: var(--card-bg-color); border-radius: 10px; overflow: hidden; position: relative; height: 500px; cursor: pointer; transition: opacity 0.3s;}
+        .hero-large-card:hover { opacity: 0.9; }
+        .hero-large-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+        .hero-large-card-content { position: absolute; bottom: 0; left: 0; padding: 2rem; background: linear-gradient(transparent, rgba(0,0,0,0.9)); width: 100%; }
+
+        .hero-small-cards { display: grid; grid-template-rows: 1fr 1fr; gap: 1.5rem; }
+
+        .card { background-color: var(--card-bg-color); border-radius: 10px; overflow: hidden; transition: transform 0.3s; display: flex; flex-direction: column; cursor: pointer; }
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-content { padding: 1.5rem; flex-grow: 1; }
+        .card-title { font-size: 1.2rem; margin: 0 0 1rem 0; font-weight: bold; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
+        .card-meta { font-size: 0.9rem; color: #aaa; display: flex; align-items: center; justify-content: space-between; }
+
+        /* Grid Section */
+        .recent-posts-section h2 { margin-bottom: 2rem; font-size: 1.8rem; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 0.5rem; }
+        .posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+
+        .hidden { display: none !important; }
+        .loading-text { text-align: center; color: #666; font-style: italic; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo" onclick="window.location.href='/'">VLP BLOG</div>
+    <nav>
+        <ul>
+            <li><a href="/index.html">Trang chủ</a></li>
+            <li><a href="/posts.html">Bài viết</a></li>
+            <li><a href="/categories.html">Danh mục</a></li>
+            <li><a href="/about.html">About Us</a></li>
+
+            <li id="adminNav" class="hidden">
+                <a href="/admin.html" class="admin-link">★ TRANG QUẢN TRỊ</a>
+            </li>
+
+            <li id="authBtnLi"><a href="/login.html" class="btn-login">Đăng nhập</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div id="loading" class="loading-text">Đang tải dữ liệu bài viết...</div>
+
+    <section class="hero-section hidden" id="heroSection">
+        <div class="hero-large-card" id="heroLarge"></div>
+        <div class="hero-small-cards" id="heroSmall"></div>
+    </section>
+
+    <section class="recent-posts-section hidden" id="gridSection">
+        <h2>Bài viết cũ hơn</h2>
+        <div class="posts-grid" id="postsGrid"></div>
+    </section>
+
+    <div id="noData" class="loading-text hidden">Chưa có bài viết nào trong hệ thống.</div>
+</main>
+
+<script>
+    const API_URL = 'http://localhost:8080/api';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        checkLoginState(); // Kiểm tra đăng nhập và Role ngay khi tải trang
+        loadPosts();
+    });
+
+    // --- LOGIC KIỂM TRA ĐĂNG NHẬP VÀ ROLE ---
+    function checkLoginState() {
+        const token = localStorage.getItem('blog_token');
+        const role = localStorage.getItem('user_role'); // Lấy role đã lưu lúc login
+
+        if(token) {
+            // 1. Đổi nút Đăng nhập thành Đăng xuất
+            document.getElementById('authBtnLi').innerHTML = `<a class="nav-link" style="color:var(--accent-color)" onclick="logout()">Đăng xuất</a>`;
+
+            // 2. Kiểm tra Role để hiện nút Admin
+            // Chấp nhận cả "ROLE_ADMIN" hoặc "ADMIN"
+            if (role === 'ROLE_ADMIN' || role === 'ADMIN') {
+                document.getElementById('adminNav').classList.remove('hidden');
+            }
+        }
+    }
+
+    function logout() {
+        // Xóa Token và Role
+        localStorage.removeItem('blog_token');
+        localStorage.removeItem('user_role');
+        window.location.href = '/login.html'; // Chuyển về trang login
+    }
+    // ----------------------------------------
+
+    async function loadPosts() {
+        try {
+            const res = await fetch(`${API_URL}/posts?pageNo=0&pageSize=12&sortBy=id&sortDir=desc`);
+            if (!res.ok) throw new Error("Không kết nối được server");
+
+            const data = await res.json();
+            const posts = data.content || data;
+
+            document.getElementById('loading').classList.add('hidden');
+
+            if (posts.length === 0) {
+                document.getElementById('noData').classList.remove('hidden');
+                return;
+            }
+
+            renderHeroSection(posts);
+            renderGridSection(posts);
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById('loading').innerText = "Lỗi kết nối hoặc chưa có bài viết.";
+        }
+    }
+
+    function renderHeroSection(posts) {
+        const heroSection = document.getElementById('heroSection');
+        const heroLarge = document.getElementById('heroLarge');
+        const heroSmall = document.getElementById('heroSmall');
+
+        if (posts.length > 0) {
+            heroSection.classList.remove('hidden');
+
+            // Bài mới nhất
+            const p0 = posts[0];
+            const img0 = p0.imageUrl || `https://picsum.photos/800/500?random=${p0.id}`;
+            heroLarge.onclick = () => window.location.href = `/post-detail.html?id=${p0.id}`;
+            heroLarge.innerHTML = `
+                <img src="${img0}" alt="${p0.title}">
+                <div class="hero-large-card-content">
+                    <h2 class="card-title" style="font-size: 2rem;">${p0.title}</h2>
+                    <div class="card-meta">
+                        <span>📅 ${formatDate(p0.createdAt)}</span>
+                        <span>📝 ${p0.categoryName || 'General'}</span>
+                    </div>
+                </div>
+            `;
+
+            // 2 bài tiếp theo
+            heroSmall.innerHTML = '';
+            for (let i = 1; i < 3; i++) {
+                if (posts[i]) {
+                    const p = posts[i];
+                    const img = p.imageUrl || `https://picsum.photos/400/250?random=${p.id}`;
+                    heroSmall.innerHTML += `
+                        <div class="card" style="height: 100%" onclick="window.location.href='/post-detail.html?id=${p.id}'">
+                            <img src="${img}" alt="${p.title}">
+                            <div class="card-content">
+                                <h3 class="card-title" style="font-size: 1rem">${p.title}</h3>
+                                <div class="card-meta">
+                                    <span>👁️ View: 0</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+    }
+
+    function renderGridSection(posts) {
+        const gridSection = document.getElementById('gridSection');
+        const postsGrid = document.getElementById('postsGrid');
+        const remainingPosts = posts.slice(3);
+
+        if (remainingPosts.length > 0) {
+            gridSection.classList.remove('hidden');
+            postsGrid.innerHTML = '';
+
+            remainingPosts.forEach(p => {
+                const img = p.imageUrl || `https://picsum.photos/400/250?random=${p.id}`;
+                postsGrid.innerHTML += `
+                    <div class="card" onclick="window.location.href='/post-detail.html?id=${p.id}'">
+                        <img src="${img}" alt="${p.title}">
+                        <div class="card-content">
+                            <h3 class="card-title">${p.title}</h3>
+                            <div class="card-meta">
+                                <span>📅 ${formatDate(p.createdAt)}</span>
+                                <span>⏱️ ${p.authorName || 'Admin'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    }
+
+    function formatDate(dateString) {
+        if(!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN');
+    }
+</script>
+</body>
+</html>
