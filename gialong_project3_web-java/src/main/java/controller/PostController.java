@@ -3,11 +3,11 @@ package com.gialong.blog.controller;
 import com.gialong.blog.payload.PostDto;
 import com.gialong.blog.payload.PostResponse;
 import com.gialong.blog.service.PostService;
-
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication; // Thêm
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,21 +20,14 @@ public class PostController {
         this.postService = postService;
     }
 
-    // ========================================================================
-    // 1. TẠO BÀI VIẾT (QUAN TRỌNG: ĐÃ SỬA ĐỂ FIX LỖI 401)
-    // ========================================================================
-
-
     @PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto) {
-        // Truyền 1L (ID của Admin) vào đây để khớp với logic trong Service
-        // Đảm bảo trong Database bảng 'users' đã có dòng có id = 1
+        // Tạm thời fix cứng ID Admin là 1 để test.
+        // Sau này bạn nên lấy từ SecurityContext:
+        // Long userId = ((CustomUserDetails) authentication.getPrincipal()).getId();
         return new ResponseEntity<>(postService.createPost(postDto, 1L), HttpStatus.CREATED);
     }
 
-
-
-    // Lấy tất cả bài viết (Phân trang & Sắp xếp)
     @GetMapping
     public PostResponse getAllPosts(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
@@ -45,22 +38,18 @@ public class PostController {
         return postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
     }
 
-    // Lấy chi tiết 1 bài viết
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
-    // Sửa bài viết (Chỉ Admin)
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto,
-                                              @PathVariable(name = "id") Long id) {
+    public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable(name = "id") Long id) {
         PostDto postResponse = postService.updatePost(postDto, id);
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
-    // Xóa bài viết (Chỉ Admin)
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(name = "id") Long id) {
@@ -68,7 +57,6 @@ public class PostController {
         return new ResponseEntity<>("Xóa bài viết thành công.", HttpStatus.OK);
     }
 
-    // Lấy bài viết theo Danh mục
     @GetMapping("/category/{id}")
     public ResponseEntity<PostResponse> getPostsByCategory(
             @PathVariable(name = "id") Long categoryId,
@@ -77,14 +65,13 @@ public class PostController {
             @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = "desc", required = false) String sortDir
     ){
-        PostResponse postResponse = postService.getPostsByCategoryId(categoryId, pageNo, pageSize, sortBy, sortDir);
-        return ResponseEntity.ok(postResponse);
+        return ResponseEntity.ok(postService.getPostsByCategoryId(categoryId, pageNo, pageSize, sortBy, sortDir));
     }
 
-    // Tìm kiếm bài viết
+    // API TÌM KIẾM
     @GetMapping("/search")
     public ResponseEntity<PostResponse> searchPosts(
-            @RequestParam(value = "query") String query,
+            @RequestParam("query") String query, // Bắt buộc phải có tham số ?query=...
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy,

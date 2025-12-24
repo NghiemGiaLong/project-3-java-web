@@ -28,10 +28,15 @@ public class PostDto {
 
     private String imageUrl;
     private String slug;
-    private boolean isPublished;
+
+    // QUAN TRỌNG: Đổi tên thành 'published' để Lombok sinh ra hàm isPublished() và setPublished()
+    // giúp khớp với code trong PostServiceImpl
+    private boolean published;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // Thông tin danh mục
     private Long categoryId;
     private String categoryName;
 
@@ -40,4 +45,9 @@ public class PostDto {
     private String authorName;
 
     private Set<CommentDto> comments;
+
+    // --- CÁC TRƯỜNG MỚI (để hiển thị số like/comment ngoài giao diện) ---
+    private long commentCount;
+    private long likeCount;
+    private long dislikeCount;
 }

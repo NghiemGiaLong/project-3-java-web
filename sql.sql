@@ -131,8 +131,8 @@ VALUES (
     'admin@gmail.com', 
     '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOcd.ptks3d.i', 
     'Super Admin', 
-    2,  -- Đây là ID của ROLE_ADMIN (dựa theo script của bạn)
-    1   -- 1 tương ứng với TRUE
+    2,  
+    1  
 );
 UPDATE Users
 SET password_hash = '{noop}12345'

@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* --- GIỮ NGUYÊN CSS CỦA BẠN --- */
         :root {
             --bg-color: #121212;
             --card-bg: #181818;
@@ -31,75 +32,46 @@
 
         .btn-login { padding: 0.6rem 1.2rem; background-color: var(--accent-color); color: #000; border-radius: 5px; font-weight: bold; transition: 0.3s; }
         .btn-login:hover { background-color: #00a844; }
-
         .admin-link { color: #ffd700 !important; font-weight: bold; border: 1px solid #ffd700; padding: 5px 10px; border-radius: 4px; }
-        .admin-link:hover { background-color: #ffd700; color: #000 !important; }
         .hidden { display: none !important; }
 
-        /* LAYOUT CHÍNH */
-        .container {
-            display: flex;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            gap: 40px;
-        }
-
-        /* SIDEBAR (Bên trái) */
+        /* LAYOUT */
+        .container { display: flex; max-width: 1400px; margin: 0 auto; padding: 40px 20px; gap: 40px; }
         .sidebar { width: 300px; flex-shrink: 0; }
         .sidebar-box { background-color: var(--card-bg); padding: 20px; border-radius: 8px; position: sticky; top: 20px; }
         .sidebar-title { font-size: 1.2rem; margin-bottom: 15px; color: var(--text-main); border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 5px; }
 
         .search-input-group { position: relative; margin-bottom: 15px; }
-        .search-input-group input { width: 100%; padding: 12px 12px 12px 40px; background-color: #333; border: 1px solid transparent; border-radius: 25px; color: white; font-size: 0.95rem; }
-        .search-input-group input:focus { outline: none; border-color: var(--accent-color); }
+        .search-input-group input { width: 100%; padding: 12px 12px 12px 40px; background-color: #333; border: 1px solid transparent; border-radius: 25px; color: white; font-size: 0.95rem; outline: none; }
+        .search-input-group input:focus { border-color: var(--accent-color); }
         .search-input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
 
-        /* NÚT VIẾT BÀI MỚI */
-        .btn-write-post { display: flex; align-items: center; justify-content: center; width: 100%; padding: 12px; background-color: var(--accent-color); color: #000; font-weight: 700; border-radius: 25px; border: none; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem; text-transform: uppercase; text-decoration: none; }
-        .btn-write-post:hover { background-color: #00e676; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 200, 83, 0.4); }
-        .btn-write-post i { margin-right: 10px; }
-
+        .btn-write-post { display: flex; align-items: center; justify-content: center; width: 100%; padding: 12px; background-color: var(--accent-color); color: #000; font-weight: 700; border-radius: 25px; border: none; cursor: pointer; transition: 0.3s; font-size: 0.95rem; text-transform: uppercase; }
+        .btn-write-post:hover { background-color: #00e676; transform: translateY(-2px); }
         .reset-filter { display: block; margin-top: 15px; font-size: 0.9rem; color: var(--accent-color); text-align: center; cursor: pointer; }
 
-        /* CONTENT (Bên phải) */
+        /* CONTENT */
         .post-list-container { flex-grow: 1; }
-
-        .post-card { display: flex; background-color: var(--card-bg); border-radius: 6px; overflow: hidden; margin-bottom: 20px; transition: all 0.3s; height: 220px; border: 1px solid transparent; }
+        .post-card { display: flex; background-color: var(--card-bg); border-radius: 6px; overflow: hidden; margin-bottom: 20px; transition: 0.3s; height: 220px; border: 1px solid transparent; }
         .post-card:hover { background-color: var(--card-hover); transform: translateY(-2px); border-color: #444; }
-
         .post-img { width: 280px; flex-shrink: 0; overflow: hidden; }
         .post-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .post-card:hover .post-img img { transform: scale(1.05); }
-
         .post-content { padding: 20px 30px; display: flex; flex-direction: column; justify-content: center; flex-grow: 1; }
         .post-meta { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 10px; display: flex; align-items: center; gap: 15px; text-transform: uppercase; font-weight: 500; }
         .post-meta i { color: var(--accent-color); margin-right: 5px; }
-        .category-tag { color: var(--accent-color); }
         .post-title { font-size: 1.6rem; font-weight: 700; margin: 0 0 15px 0; line-height: 1.3; }
-        .post-title a:hover { color: var(--accent-color); }
-
-        /* FOOTER CỦA CARD (Tương tác) */
         .post-footer { margin-top: auto; display: flex; gap: 20px; color: var(--text-sub); font-size: 0.9rem; border-top: 1px solid #333; padding-top: 15px; }
         .interaction-item { display: flex; align-items: center; gap: 6px; }
-        .interaction-item i { font-size: 1rem; transition: 0.3s; }
-
-        /* Màu icon */
         .icon-like { color: var(--accent-color); }
         .icon-dislike { color: #e53935; }
         .icon-comment { color: #29b6f6; }
 
-        /* PAGINATION */
         .pagination { display: flex; justify-content: center; margin-top: 40px; gap: 10px; }
         .page-btn { background-color: var(--card-bg); border: 1px solid #333; color: var(--text-main); padding: 10px 16px; border-radius: 4px; cursor: pointer; }
         .page-btn.active { background-color: var(--accent-color); color: black; font-weight: bold; border-color: var(--accent-color); }
 
-        @media (max-width: 768px) {
-            .container { flex-direction: column; }
-            .sidebar { width: 100%; }
-            .post-card { flex-direction: column; height: auto; }
-            .post-img { width: 100%; height: 200px; }
-        }
+        @media (max-width: 768px) { .container { flex-direction: column; } .sidebar { width: 100%; } .post-card { flex-direction: column; height: auto; } .post-img { width: 100%; height: 200px; } }
     </style>
 </head>
 <body>
@@ -111,7 +83,6 @@
             <li><a href="index.html">Trang chủ</a></li>
             <li><a href="posts.html" style="color: var(--accent-color);">Bài viết</a></li>
             <li><a href="categories.html">Danh mục</a></li>
-            <li><a href="about.html">About Us</a></li>
 
             <li id="adminNav" class="hidden">
                 <a href="admin.html" class="admin-link">QUẢN TRỊ</a>
@@ -132,10 +103,12 @@
             </div>
 
             <a href="write-post.html" class="btn-write-post">
-                <i class="fas fa-plus-circle"></i> Viết bài mới
+                <i class="fas fa-plus-circle"></i> &nbsp; Viết bài mới
             </a>
 
-            <a href="posts.html" id="resetBtn" class="reset-filter" style="display: none;">← Xem tất cả bài viết</a>
+            <a href="#" id="resetBtn" class="reset-filter" style="display: none;" onclick="resetFilter()">
+                ← Xem tất cả bài viết
+            </a>
         </div>
     </aside>
 
@@ -150,84 +123,88 @@
 <script>
     // --- CẤU HÌNH ---
     const API_URL = 'http://localhost:8080/api';
-    const PAGE_SIZE = 6; // Số bài trên 1 trang
+    const PAGE_SIZE = 6;
     let currentPage = 0;
+
+    // Biến trạng thái
     let currentKeyword = '';
+    let currentCategoryId = null;
+
+    // Lấy categoryId từ URL nếu có (ví dụ từ trang categories bấm sang)
     const urlParams = new URLSearchParams(window.location.search);
-    const categoryId = urlParams.get('categoryId');
+    const urlCatId = urlParams.get('categoryId');
 
     // --- KHỞI TẠO ---
     document.addEventListener('DOMContentLoaded', () => {
-        checkLoginState(); // Kiểm tra header login
+        checkLoginState();
 
-        // Nếu có categoryId trên URL, đổi tiêu đề
-        if(categoryId) {
-            document.getElementById('filterTitle').innerText = "Đang lọc theo danh mục";
+        if(urlCatId) {
+            currentCategoryId = urlCatId;
+            document.getElementById('filterTitle').innerText = "Đang lọc danh mục";
             document.getElementById('resetBtn').style.display = 'block';
         }
+
         loadPosts(0);
     });
 
-    // --- 1. LOGIC LOGIN HEADER ---
-    function checkLoginState() {
-        const token = localStorage.getItem('blog_token');
-        const role = localStorage.getItem('user_role');
-
-        if(token) {
-            document.getElementById('authBtnLi').innerHTML = `
-                <a href="#" class="btn-login" style="background:#333; color:white; border:1px solid #555;" onclick="logout()">
-                    Đăng xuất
-                </a>`;
-
-            if (role === 'ROLE_ADMIN' || role === 'ADMIN') {
-                document.getElementById('adminNav').classList.remove('hidden');
-            }
-        }
-    }
-
-    function logout() {
-        if(confirm("Bạn có chắc muốn đăng xuất?")) {
-            localStorage.removeItem('blog_token');
-            localStorage.removeItem('user_role');
-            window.location.href = 'login.html';
-        }
-    }
-
-    // --- 2. TÌM KIẾM ---
+    // --- 1. XỬ LÝ TÌM KIẾM ---
     let timeout = null;
     function handleSearch() {
+        // Debounce: Đợi người dùng gõ xong 0.5s mới gọi API
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            currentKeyword = document.getElementById('searchInput').value;
-            loadPosts(0);
+            const val = document.getElementById('searchInput').value.trim();
+            currentKeyword = val;
+
+            if(val.length > 0) {
+                document.getElementById('filterTitle').innerText = `Kết quả: "${val}"`;
+                document.getElementById('resetBtn').style.display = 'block';
+                // Khi tìm kiếm thì bỏ qua category
+                currentCategoryId = null;
+            } else {
+                if(!currentCategoryId) {
+                    document.getElementById('filterTitle').innerText = "Tìm kiếm";
+                    document.getElementById('resetBtn').style.display = 'none';
+                }
+            }
+            loadPosts(0); // Gọi hàm load lại dữ liệu
         }, 500);
     }
 
-    // --- 3. TẢI DỮ LIỆU ---
+    function resetFilter() {
+        window.location.href = 'posts.html'; // Load lại trang sạch
+    }
+
+    // --- 2. TẢI DỮ LIỆU TỪ API (QUAN TRỌNG ĐÃ SỬA) ---
     async function loadPosts(page) {
         currentPage = page;
         const wrapper = document.getElementById('postsWrapper');
+        wrapper.innerHTML = '<p style="text-align:center; color: #666; margin-top: 50px;"><i class="fas fa-spinner fa-spin"></i> Đang tải...</p>';
 
         try {
-            // Xây dựng URL API
-            let url = `${API_URL}/posts`;
+            let url = '';
 
-            // Nếu có category -> tìm theo category
-            if(categoryId) {
-                url = `${API_URL}/posts/category/${categoryId}?pageNo=${page}&pageSize=${PAGE_SIZE}&sortBy=createdAt&sortDir=desc`;
+            // LOGIC CHỌN API:
+            if (currentKeyword) {
+                // 1. Nếu có từ khóa -> Gọi API Search
+                // Lưu ý: Backend phải nhận tham số 'query'
+                url = `${API_URL}/posts/search?query=${encodeURIComponent(currentKeyword)}&pageNo=${page}&pageSize=${PAGE_SIZE}&sortBy=createdAt&sortDir=desc`;
+
+            } else if (currentCategoryId) {
+                // 2. Nếu có Category -> Gọi API Category
+                url = `${API_URL}/posts/category/${currentCategoryId}?pageNo=${page}&pageSize=${PAGE_SIZE}&sortBy=createdAt&sortDir=desc`;
+
             } else {
-                // Mặc định lấy tất cả
+                // 3. Mặc định -> Gọi API lấy tất cả
                 url = `${API_URL}/posts?pageNo=${page}&pageSize=${PAGE_SIZE}&sortBy=createdAt&sortDir=desc`;
             }
 
-            // Nếu có từ khóa tìm kiếm -> (Backend cần hỗ trợ API search, ở đây giả lập load lại trang đầu)
-            // Nếu bạn có API search: url = `${API_URL}/posts/search?title=${currentKeyword}...`
-
             const res = await fetch(url);
             if (!res.ok) throw new Error("API Error");
-            const data = await res.json();
 
-            const posts = data.content || data;
+            const data = await res.json();
+            // Xử lý dữ liệu trả về từ Page (có thể nằm trong .content)
+            const posts = data.content ? data.content : data;
             const totalPages = data.totalPages || 1;
 
             renderPosts(posts);
@@ -235,26 +212,27 @@
 
         } catch (err) {
             console.error("Lỗi tải bài viết:", err);
-            // Fallback: Dữ liệu giả để test giao diện
-            const fakeData = generateFakePosts(page, PAGE_SIZE);
-            renderPosts(fakeData.content);
-            renderPagination(fakeData.totalPages);
+            wrapper.innerHTML = `<p style="text-align:center; color: #e53935; margin-top: 50px;">Lỗi kết nối Server hoặc không có dữ liệu.</p>`;
         }
     }
 
-    // --- 4. RENDER DANH SÁCH BÀI VIẾT ---
+    // --- 3. RENDER DANH SÁCH ---
     function renderPosts(posts) {
         const wrapper = document.getElementById('postsWrapper');
 
         if (!posts || posts.length === 0) {
-            wrapper.innerHTML = '<p style="text-align:center; margin-top:50px; color: #666; font-size: 1.2rem;">Không tìm thấy bài viết nào.</p>';
+            wrapper.innerHTML = '<p style="text-align:center; margin-top:50px; color: #666; font-size: 1.2rem; font-style:italic;">Không tìm thấy bài viết nào.</p>';
             return;
         }
 
         wrapper.innerHTML = '';
         posts.forEach(post => {
-            const imgUrl = post.imageUrl || `https://picsum.photos/400/300?random=${post.id}`;
-            const date = new Date(post.createdAt || Date.now()).toLocaleDateString('vi-VN');
+            // Xử lý ảnh: Nếu null thì dùng ảnh placeholder
+            const imgUrl = post.imageUrl && post.imageUrl.startsWith('http')
+                           ? post.imageUrl
+                           : 'https://via.placeholder.com/400x300?text=No+Image';
+
+            const date = new Date(post.createdAt).toLocaleDateString('vi-VN');
 
             wrapper.innerHTML += `
                 <div class="post-card">
@@ -271,13 +249,13 @@
                         <h2 class="post-title"><a href="post-detail.html?id=${post.id}">${post.title}</a></h2>
 
                         <div class="post-footer">
-                            <div class="interaction-item" title="Lượt thích">
+                            <div class="interaction-item">
                                 <i class="fas fa-thumbs-up icon-like"></i> ${post.likeCount || 0}
                             </div>
-                            <div class="interaction-item" title="Không thích">
+                            <div class="interaction-item">
                                 <i class="fas fa-thumbs-down icon-dislike"></i> ${post.dislikeCount || 0}
                             </div>
-                            <div class="interaction-item" title="Bình luận">
+                            <div class="interaction-item">
                                 <i class="fas fa-comment icon-comment"></i> ${post.commentCount || 0}
                             </div>
 
@@ -292,7 +270,7 @@
         });
     }
 
-    // --- 5. RENDER PHÂN TRANG ---
+    // --- 4. RENDER PHÂN TRANG ---
     function renderPagination(total) {
         const container = document.getElementById('pagination');
         container.innerHTML = '';
@@ -304,24 +282,23 @@
         }
     }
 
-    // --- 6. DATA GIẢ LẬP (Khi chưa có API) ---
-    function generateFakePosts(page, size) {
-        let posts = [];
-        for (let i = 0; i < size; i++) {
-            let id = page * size + i + 1;
-            posts.push({
-                id: id,
-                title: `Bài viết mẫu hiển thị số liệu ${id}`,
-                authorName: "Gia Long",
-                categoryName: "Công nghệ",
-                createdAt: new Date().toISOString(),
-                // Giả lập số liệu để test giao diện
-                likeCount: Math.floor(Math.random() * 50),
-                dislikeCount: Math.floor(Math.random() * 5),
-                commentCount: Math.floor(Math.random() * 20)
-            });
+    // --- 5. AUTH LOGIC ---
+    function checkLoginState() {
+        const token = localStorage.getItem('blog_token');
+        const role = localStorage.getItem('user_role');
+        if(token) {
+            document.getElementById('authBtnLi').innerHTML = `<a href="#" class="btn-login" style="background:#333; border:1px solid #555; color:#fff;" onclick="logout()">Đăng xuất</a>`;
+            if (role === 'ROLE_ADMIN' || role === 'ADMIN') {
+                document.getElementById('adminNav').classList.remove('hidden');
+            }
         }
-        return { content: posts, totalPages: 3 };
+    }
+    function logout() {
+        if(confirm("Đăng xuất?")) {
+            localStorage.removeItem('blog_token');
+            localStorage.removeItem('user_role');
+            window.location.href = 'login.html';
+        }
     }
 </script>
 </body>

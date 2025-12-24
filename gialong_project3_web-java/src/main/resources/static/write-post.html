@@ -4,43 +4,69 @@
     <meta charset="UTF-8">
     <title>Viết bài mới - VLP BLOG</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #121212; --card: #181818; --accent: #00c853; --text: #ffffff; --border: #333; }
+        :root { --bg: #121212; --card: #1e1e1e; --accent: #00c853; --text: #e0e0e0; --border: #333; }
         * { box-sizing: border-box; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; }
-        header { padding: 1.2rem 3rem; background: #000; border-bottom: 1px solid var(--border); }
-        .logo { color: var(--accent); text-decoration: none; font-weight: bold; font-size: 1.5rem; letter-spacing: 2px; }
-        .container { max-width: 800px; margin: 40px auto; background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); }
-        h2 { border-left: 5px solid var(--accent); padding-left: 15px; margin-bottom: 30px; }
-        label { display: block; margin-bottom: 8px; color: #b3b3b3; font-size: 0.85rem; text-transform: uppercase; font-weight: bold; }
+        body { background: var(--bg); color: var(--text); font-family: 'Roboto', sans-serif; margin: 0; }
+
+        /* --- HEADER ĐỒNG BỘ --- */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem; background-color: #000; border-bottom: 1px solid var(--border); }
+        .logo { font-size: 1.8rem; font-weight: bold; color: var(--accent); letter-spacing: 2px; cursor: pointer; text-decoration: none; }
+        nav ul { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
+        nav li { margin-left: 2rem; }
+        nav a { text-decoration: none; color: #fff; font-weight: 500; transition: 0.3s; }
+        nav a:hover { color: var(--accent); }
+        .btn-logout { border: 1px solid #555; padding: 5px 15px; border-radius: 4px; color: #ccc; }
+        .btn-logout:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* --- FORM CONTAINER --- */
+        .container { max-width: 800px; margin: 40px auto; background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+
+        h2 { border-left: 5px solid var(--accent); padding-left: 15px; margin-bottom: 30px; color: #fff; text-transform: uppercase; }
+
+        label { display: block; margin-bottom: 8px; color: #b3b3b3; font-size: 0.85rem; text-transform: uppercase; font-weight: bold; margin-top: 20px; }
+
         input, textarea, select {
-            width: 100%; padding: 12px; margin-bottom: 20px;
-            background: #252525; border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 1rem;
+            width: 100%; padding: 12px;
+            background: #2d2d2d; border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 1rem; font-family: inherit;
+            transition: 0.3s;
         }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 5px rgba(0, 200, 83, 0.3); }
+
         .btn-post {
-            background: var(--accent); color: #000; font-weight: bold; padding: 16px;
+            background: var(--accent); color: #000; font-weight: bold; padding: 16px; margin-top: 30px;
             border: none; border-radius: 40px; width: 100%; cursor: pointer; font-size: 1.1rem;
-            text-transform: uppercase; transition: all 0.3s;
+            text-transform: uppercase; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .btn-post:hover { background: #00e676; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 200, 83, 0.3); }
-        .loading-overlay { display: none; color: var(--accent); text-align: center; margin-bottom: 15px; }
+
+        .loading-overlay { display: none; color: var(--accent); text-align: center; margin-bottom: 15px; font-style: italic; }
     </style>
 </head>
 <body>
 
-<header><a href="/posts.html" class="logo">VLP BLOG</a></header>
+<header>
+    <a href="index.html" class="logo">VLP BLOG</a>
+    <nav>
+        <ul>
+            <li><a href="index.html">Trang chủ</a></li>
+            <li><a href="posts.html">Bài viết</a></li>
+            <li><a href="#" class="btn-logout" onclick="logout()">Đăng xuất</a></li>
+        </ul>
+    </nav>
+</header>
 
 <div class="container">
     <h2><i class="fas fa-edit"></i> Tạo bài viết mới</h2>
-    <div id="loading" class="loading-overlay"><i class="fas fa-spinner fa-spin"></i> Đang xử lý...</div>
+    <div id="loading" class="loading-overlay"><i class="fas fa-spinner fa-spin"></i> Đang kết nối tới máy chủ...</div>
 
     <form id="writeForm">
         <label>Tiêu đề bài viết</label>
-        <input type="text" id="title" required placeholder="Nhập tiêu đề bài viết...">
+        <input type="text" id="title" required placeholder="Ví dụ: Lập trình Java Spring Boot cơ bản...">
 
         <label>Mô tả ngắn (Description)</label>
-        <input type="text" id="description" required placeholder="Tóm tắt ngắn cho bài viết (bắt buộc)...">
+        <input type="text" id="description" required placeholder="Tóm tắt nội dung để hiển thị trên thẻ bài viết...">
 
         <label>Danh mục</label>
         <select id="categorySelect" required>
@@ -48,10 +74,10 @@
         </select>
 
         <label>Ảnh bìa (URL)</label>
-        <input type="text" id="imageUrl" placeholder="Dán link ảnh tại đây...">
+        <input type="text" id="imageUrl" placeholder="Link ảnh (VD: https://i.imgur.com/...)">
 
         <label>Nội dung chi tiết</label>
-        <textarea id="content" rows="12" required placeholder="Nội dung bài viết..."></textarea>
+        <textarea id="content" rows="12" required placeholder="Viết nội dung chính tại đây..."></textarea>
 
         <button type="submit" class="btn-post" id="submitBtn">
             <i class="fas fa-paper-plane"></i> XUẤT BẢN BÀI VIẾT
@@ -60,32 +86,52 @@
 </div>
 
 <script>
-    // 1. Load danh mục từ API
+    const API_URL = 'http://localhost:8080/api';
+
+    // --- 1. KIỂM TRA ĐĂNG NHẬP NGAY KHI LOAD ---
+    document.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem('blog_token');
+        if (!token) {
+            alert("Bạn cần đăng nhập để viết bài!");
+            window.location.href = 'login.html';
+        } else {
+            fetchCategories(); // Chỉ tải danh mục khi đã có token
+        }
+    });
+
+    // --- 2. TẢI DANH MỤC ---
     async function fetchCategories() {
         try {
-            const res = await fetch('http://localhost:8080/api/categories');
+            const res = await fetch(`${API_URL}/categories`);
             if (!res.ok) throw new Error();
             const data = await res.json();
+
             const select = document.getElementById('categorySelect');
             select.innerHTML = '<option value="">-- Chọn danh mục --</option>';
             data.forEach(cat => {
-                // Log Hibernate cho thấy trường là category_name, nên dùng categoryName
-                select.innerHTML += `<option value="${cat.id}">${cat.categoryName || cat.name}</option>`;
+                select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
             });
         } catch (e) {
-            document.getElementById('categorySelect').innerHTML = '<option value="">Lỗi tải danh mục</option>';
+            document.getElementById('categorySelect').innerHTML = '<option value="">Lỗi tải danh mục (Có thể chưa chạy Backend)</option>';
         }
     }
-    fetchCategories();
 
-    // 2. Gửi dữ liệu bài viết
+    // --- 3. XỬ LÝ ĐĂNG BÀI ---
     document.getElementById('writeForm').onsubmit = async (e) => {
         e.preventDefault();
+
+        // LẤY TOKEN (Quan trọng nhất để tránh lỗi 401)
+        const token = localStorage.getItem('blog_token');
+        if(!token) {
+            alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+            window.location.href = 'login.html';
+            return;
+        }
 
         const submitBtn = document.getElementById('submitBtn');
         const loading = document.getElementById('loading');
 
-        // Thu thập dữ liệu
+        // Payload
         const payload = {
             title: document.getElementById('title').value,
             description: document.getElementById('description').value,
@@ -94,31 +140,48 @@
             categoryId: parseInt(document.getElementById('categorySelect').value)
         };
 
-        // Giao diện khi đang gửi
+        // UI Loading
         submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG GỬI...';
         loading.style.display = 'block';
 
         try {
-            const res = await fetch('http://localhost:8080/api/posts', {
+            const res = await fetch(`${API_URL}/posts`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    // --- DÒNG QUAN TRỌNG ĐỂ SỬA LỖI CỦA BẠN ---
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
                 alert("🎉 Bài viết đã được xuất bản thành công!");
-                window.location.href = '/posts.html';
+                window.location.href = 'index.html'; // Chuyển về trang chủ
+            } else if (res.status === 401) {
+                alert("⛔ Lỗi 401: Bạn không có quyền đăng bài (Token hết hạn hoặc không phải Admin).");
             } else {
                 const error = await res.json();
                 alert("Lỗi từ máy chủ: " + (error.message || "Kiểm tra lại dữ liệu!"));
             }
         } catch (err) {
-            alert("❌ Không thể kết nối đến máy chủ! Vui lòng kiểm tra xem Backend (Spring Boot) đã khởi động xong chưa.");
+            alert("❌ Không thể kết nối đến máy chủ! Vui lòng kiểm tra Backend.");
+            console.error(err);
         } finally {
             submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> XUẤT BẢN BÀI VIẾT';
             loading.style.display = 'none';
         }
     };
+
+    function logout() {
+        if(confirm("Bạn muốn đăng xuất?")) {
+            localStorage.removeItem('blog_token');
+            localStorage.removeItem('user_role');
+            window.location.href = 'login.html';
+        }
+    }
 </script>
 </body>
 </html>
